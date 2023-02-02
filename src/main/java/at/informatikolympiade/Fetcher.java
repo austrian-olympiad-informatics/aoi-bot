@@ -17,17 +17,23 @@ import java.util.*;
 public class Fetcher extends Thread {
 
 
+    public void waitOnMe() {
+        synchronized (this) {
+            try { this.wait(); } catch (InterruptedException ignored) {}
+        }
+    }
+
     @Override
     public void run() {
         HttpClient client = HttpClients.createDefault();
 
-        while(true) {
+        while(!Main.STATE_INSTANCE.appShouldClose()) {
             try {
                 sleep(5000);
             } catch (InterruptedException ignored) {}
             HttpPost post = new HttpPost(Main.STATE_INSTANCE.getServerURI() + "/api/bot/discord");
 
-            StringEntity params = null;
+            StringEntity params;
             try {
                 params = new StringEntity("{\"secret\" : \"" + Main.STATE_INSTANCE.getSecret() + "\"}");
             } catch (UnsupportedEncodingException e) {
@@ -40,13 +46,16 @@ public class Fetcher extends Thread {
                 HttpResponse resp = client.execute(post);
 
                 if(resp.getStatusLine().getStatusCode() == 200) {
-                    Main.STATE_INSTANCE.getMapLock().writeLock().lock();
+                    Main.STATE_INSTANCE.lockMap();
                     String response = new BasicResponseHandler().handleResponse(resp);
                     response = response.substring(1, response.length()-2).replace("\\", "");
                     Gson users = new Gson();
                     Type type = new TypeToken<HashMap<String, Byte>>(){}.getType();
                     Main.STATE_INSTANCE.setRoles(users.fromJson(response, type));
-                    Main.STATE_INSTANCE.getMapLock().writeLock().unlock();
+                    Main.STATE_INSTANCE.unlockMap();
+                    synchronized (this) { this.notifyAll(); }
+                } else {
+                    synchronized (this) { this.notifyAll(); }
                 }
                 } catch (IOException e) {
                     e.printStackTrace();

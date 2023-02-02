@@ -27,8 +27,8 @@ public class Creator {
     Role thisYearCEOIRole;
     Role thisYearEGOIRole;
 
-    public Creator(Guild guild) {
-        this.guild = guild;
+    public Creator() {
+        this.guild = Main.JDA_INSTANCE.getGuildById(Main.CONFIG.getString("AOIGuildID"));
     }
 
     private TextChannel createChannelIfNotExists(String name, String categoryName) {
@@ -124,14 +124,20 @@ public class Creator {
 
             if((roles & 0x0001) == 1) {
                 guild.addRoleToMember(m, this.thisYearEGOIRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
                 ready = true;
             }
             if((roles & 0x0002) == 2) {
                 guild.addRoleToMember(m, this.thisYearCEOIRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
                 ready = true;
             }
             if((roles & 0x0004) == 4) {
                 guild.addRoleToMember(m, this.thisYearIOIRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
                 ready = true;
             }
 
@@ -139,6 +145,7 @@ public class Creator {
 
             if((roles >> 3) == 1) {
                 guild.addRoleToMember(m, this.thisYearWoerglRole).complete();
+                guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
             } else if((roles >> 4) == 1) {
                 guild.addRoleToMember(m, this.thisYearBaseRole).complete();
             }

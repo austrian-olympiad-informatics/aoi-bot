@@ -1,7 +1,7 @@
 package at.informatikolympiade;
 
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class State {
@@ -19,17 +19,20 @@ public class State {
 
     private String secret;
 
+    private boolean shouldClose;
+
     private HashMap<String, Byte> roles;
     private HashMap<String, Byte> oldRoles;
-    private ReentrantReadWriteLock lock;
+    private ReentrantLock lock;
 
-    public State(String year, String serverURI, String secret) {
-        lock = new ReentrantReadWriteLock(true);
+    public State() {
+        lock = new ReentrantLock(true);
         roles = new HashMap<>();
         oldRoles = new HashMap<>();
-        this.secret = secret;
-        this.serverURI = serverURI;
-        updateYear(year);
+        this.secret = Main.CONFIG.getString("Secret");
+        this.serverURI = Main.CONFIG.getString("ServerURI");
+        this.shouldClose = false;
+        updateYear(Main.CONFIG.getString("CurrentYear"));
     }
 
     public void updateYear(String year){
@@ -95,7 +98,16 @@ public class State {
         this.roles = roles;
     }
 
-    public ReentrantReadWriteLock getMapLock() {
-        return this.lock;
+    public void lockMap() {
+        this.lock.lock();
+    }
+    public void unlockMap() { this.lock.unlock(); }
+
+    public boolean appShouldClose() {
+        return shouldClose;
+    }
+
+    public void close() {
+        this.shouldClose = true;
     }
 }
