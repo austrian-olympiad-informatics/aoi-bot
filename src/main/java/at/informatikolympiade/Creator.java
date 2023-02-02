@@ -13,6 +13,8 @@ import java.util.List;
 
 public class Creator {
 
+    private static Creator INSTANCE;
+
     private Guild guild;
 
     private TextChannel thisYearWienChannel;
@@ -27,8 +29,15 @@ public class Creator {
     Role thisYearCEOIRole;
     Role thisYearEGOIRole;
 
-    public Creator() {
-        this.guild = Main.JDA_INSTANCE.getGuildById(Main.CONFIG.getString("AOIGuildID"));
+    private Creator() {
+        this.guild = Main.JDA_INSTANCE.getGuildById(Config.INSTANCE.getString("AOIGuildID"));
+    }
+
+    public static Creator getInstance() {
+        if(INSTANCE == null)
+            return INSTANCE = new Creator();
+        else
+            return INSTANCE;
     }
 
     private TextChannel createChannelIfNotExists(String name, String categoryName) {
@@ -60,19 +69,19 @@ public class Creator {
     }
 
     public void createChannels() {
-        this.thisYearWienChannel = createChannelIfNotExists("camp-wien", Main.STATE_INSTANCE.getThisYearCategory());
-        this.thisYearWoerglChannel = createChannelIfNotExists("camp-woergl", Main.STATE_INSTANCE.getThisYearCategory());
-        this.thisYearIOIChannel = createChannelIfNotExists("ioi", Main.STATE_INSTANCE.getThisYearCategory());
-        this.thisYearCEOIChannel = createChannelIfNotExists("ceoi", Main.STATE_INSTANCE.getThisYearCategory());
-        this.thisYearEGOIChannel = createChannelIfNotExists("egoi", Main.STATE_INSTANCE.getThisYearCategory());
+        this.thisYearWienChannel = createChannelIfNotExists("camp-wien", BotState.getInstance().getThisYearCategory());
+        this.thisYearWoerglChannel = createChannelIfNotExists("camp-woergl", BotState.getInstance().getThisYearCategory());
+        this.thisYearIOIChannel = createChannelIfNotExists("ioi", BotState.getInstance().getThisYearCategory());
+        this.thisYearCEOIChannel = createChannelIfNotExists("ceoi", BotState.getInstance().getThisYearCategory());
+        this.thisYearEGOIChannel = createChannelIfNotExists("egoi", BotState.getInstance().getThisYearCategory());
     }
 
     public void createRoles() {
-        this.thisYearBaseRole = createRoleIfNotExists(Main.STATE_INSTANCE.getThisYearBaseRole());
-        this.thisYearWoerglRole = createRoleIfNotExists(Main.STATE_INSTANCE.getThisYearWoerglRole());
-        this.thisYearIOIRole = createRoleIfNotExists(Main.STATE_INSTANCE.getThisYearIOIRole());
-        this.thisYearCEOIRole = createRoleIfNotExists(Main.STATE_INSTANCE.getThisYearCEOIRole());
-        this.thisYearEGOIRole = createRoleIfNotExists(Main.STATE_INSTANCE.getThisYearEGOIRole());
+        this.thisYearBaseRole = createRoleIfNotExists(BotState.getInstance().getThisYearBaseRole());
+        this.thisYearWoerglRole = createRoleIfNotExists(BotState.getInstance().getThisYearWoerglRole());
+        this.thisYearIOIRole = createRoleIfNotExists(BotState.getInstance().getThisYearIOIRole());
+        this.thisYearCEOIRole = createRoleIfNotExists(BotState.getInstance().getThisYearCEOIRole());
+        this.thisYearEGOIRole = createRoleIfNotExists(BotState.getInstance().getThisYearEGOIRole());
     }
 
     private long getNormalUserTextPermissions() {

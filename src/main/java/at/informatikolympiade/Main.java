@@ -12,13 +12,9 @@ public class Main {
     //Invite: https://discord.com/api/oauth2/authorize?client_id=1070115188721844264&permissions=8&scope=bot%20applications.commands
 
     public static JDA JDA_INSTANCE;
-    public static State STATE_INSTANCE;
-    public static Creator CREATOR_INSTANCE;
-    public static Config CONFIG;
 
     public static void main(String[] args) {
-        CONFIG = new Config();
-        JDA_INSTANCE = createJDA(CONFIG.getString("BotToken"));
+        JDA_INSTANCE = createJDA(Config.INSTANCE.getString("BotToken"));
 
         try {
             JDA_INSTANCE.awaitReady();
@@ -26,24 +22,22 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        STATE_INSTANCE = new State();
-        CREATOR_INSTANCE = new Creator();
-        CREATOR_INSTANCE.createChannels();
-        CREATOR_INSTANCE.createRoles();
-        CREATOR_INSTANCE.setPermissions();
+        Creator.getInstance().createChannels();
+        Creator.getInstance().createRoles();
+        Creator.getInstance().setPermissions();
 
         Fetcher fetcher = new Fetcher();
         fetcher.start();
 
-        while(!Main.STATE_INSTANCE.appShouldClose()) {
+        while(!BotState.getInstance().appShouldClose()) {
             fetcher.waitOnMe();
 
-            Main.STATE_INSTANCE.lockMap();
-            HashMap<String, Byte> roles = Main.STATE_INSTANCE.getChangedRoles();
-            Main.STATE_INSTANCE.unlockMap();
+            BotState.getInstance().lockMap();
+            HashMap<String, Byte> roles = BotState.getInstance().getChangedRoles();
+            BotState.getInstance().unlockMap();
 
             for(String r : roles.keySet()) {
-                Main.CREATOR_INSTANCE.setRole(r, roles.get(r));
+                Creator.getInstance().setRole(r, roles.get(r));
             }
         }
     }

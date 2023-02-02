@@ -12,7 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
 
 public class Fetcher extends Thread {
 
@@ -27,15 +27,15 @@ public class Fetcher extends Thread {
     public void run() {
         HttpClient client = HttpClients.createDefault();
 
-        while(!Main.STATE_INSTANCE.appShouldClose()) {
+        while(!BotState.getInstance().appShouldClose()) {
             try {
                 sleep(5000);
             } catch (InterruptedException ignored) {}
-            HttpPost post = new HttpPost(Main.STATE_INSTANCE.getServerURI() + "/api/bot/discord");
+            HttpPost post = new HttpPost(BotState.getInstance().getServerURI() + "/api/bot/discord");
 
             StringEntity params;
             try {
-                params = new StringEntity("{\"secret\" : \"" + Main.STATE_INSTANCE.getSecret() + "\"}");
+                params = new StringEntity("{\"secret\" : \"" + BotState.getInstance().getSecret() + "\"}");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
@@ -46,13 +46,13 @@ public class Fetcher extends Thread {
                 HttpResponse resp = client.execute(post);
 
                 if(resp.getStatusLine().getStatusCode() == 200) {
-                    Main.STATE_INSTANCE.lockMap();
+                    BotState.getInstance().lockMap();
                     String response = new BasicResponseHandler().handleResponse(resp);
                     response = response.substring(1, response.length()-2).replace("\\", "");
                     Gson users = new Gson();
                     Type type = new TypeToken<HashMap<String, Byte>>(){}.getType();
-                    Main.STATE_INSTANCE.setRoles(users.fromJson(response, type));
-                    Main.STATE_INSTANCE.unlockMap();
+                    BotState.getInstance().setRoles(users.fromJson(response, type));
+                    BotState.getInstance().unlockMap();
                     synchronized (this) { this.notifyAll(); }
                 } else {
                     synchronized (this) { this.notifyAll(); }

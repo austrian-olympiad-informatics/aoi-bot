@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-public class State {
+public class BotState {
+
+    private static BotState INSTANCE;
 
     private String thisYear;
     private String thisYearBaseRole;
@@ -25,14 +27,21 @@ public class State {
     private HashMap<String, Byte> oldRoles;
     private ReentrantLock lock;
 
-    public State() {
+    private BotState() {
         lock = new ReentrantLock(true);
         roles = new HashMap<>();
         oldRoles = new HashMap<>();
-        this.secret = Main.CONFIG.getString("Secret");
-        this.serverURI = Main.CONFIG.getString("ServerURI");
+        this.secret = Config.INSTANCE.getString("Secret");
+        this.serverURI = Config.INSTANCE.getString("ServerURI");
         this.shouldClose = false;
-        updateYear(Main.CONFIG.getString("CurrentYear"));
+        updateYear(Config.INSTANCE.getString("CurrentYear"));
+    }
+
+    public static BotState getInstance() {
+        if(INSTANCE == null)
+            return INSTANCE = new BotState();
+        else
+            return INSTANCE;
     }
 
     public void updateYear(String year){

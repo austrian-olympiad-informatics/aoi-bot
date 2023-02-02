@@ -7,9 +7,12 @@ import java.util.HashMap;
 
 public class Config {
 
+    public static Config INSTANCE = new Config();
+
     private HashMap<String, Object> data;
 
-    public Config() {
+
+    private Config() {
         loadConfig();
     }
 
