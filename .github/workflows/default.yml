@@ -40,7 +40,6 @@ jobs:
       - name: Deploy to server
         run: | 
           echo "Deploying aoi-bot..."
-          apt-get install rsync openssh
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
