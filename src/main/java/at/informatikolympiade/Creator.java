@@ -85,7 +85,7 @@ public class Creator {
     }
 
     private long getNormalUserTextPermissions() {
-        return Permission.getRaw(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND_IN_THREADS,
+        return Permission.getRaw(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND, Permission.MESSAGE_SEND_IN_THREADS,
                 Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_ATTACH_FILES, Permission.CREATE_PUBLIC_THREADS, Permission.CREATE_PRIVATE_THREADS,
                 Permission.MESSAGE_TTS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_EXT_STICKER, Permission.MESSAGE_EMBED_LINKS,
                 Permission.USE_APPLICATION_COMMANDS);
