@@ -131,19 +131,19 @@ public class Creator {
             byte b = roles;
             boolean ready = false;
 
-            if((roles & 0x0001) == 1) {
+            if((roles & 0x01) == 1) {
                 guild.addRoleToMember(m, this.thisYearEGOIRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
                 ready = true;
             }
-            if((roles & 0x0002) == 2) {
+            if((roles & 0x02) == 2) {
                 guild.addRoleToMember(m, this.thisYearCEOIRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
                 ready = true;
             }
-            if((roles & 0x0004) == 4) {
+            if((roles & 0x04) == 4) {
                 guild.addRoleToMember(m, this.thisYearIOIRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearWoerglRole).complete();
@@ -152,7 +152,7 @@ public class Creator {
 
             if(ready) return;
 
-            if((roles >> 3) == 1) {
+            if((roles & 0x08) == 8) {
                 guild.addRoleToMember(m, this.thisYearWoerglRole).complete();
                 guild.removeRoleFromMember(m, this.thisYearBaseRole).complete();
             } else if((roles >> 4) == 1) {
