@@ -8,7 +8,7 @@ A bot for the discord server of the AOI.
 ## Install
 
 1. Create the config.yml file in the directory where your jar will be.
-2. Add the following content (Secret is the password for the aoi-portal request)
+2. Add the following content: (Secret is the password for the aoi-portal request)
 
 ```
 BotToken: ""
